@@ -59,7 +59,7 @@ jobs:
                   "customfield_12345": "${{ fromJson(inputs.port_context).entity.properties.severity }}",
                   "labels": ["port-${{ fromJson(inputs.port_context).entity.identifier }}"]
                 }
-          } catch (error) {
+          } catch {
             uses: port-labs/port-github-action@v1
             with:
               clientId: ${{ secrets.PORT_CLIENT_ID }}
@@ -67,7 +67,7 @@ jobs:
               operation: PATCH_RUN
               runId: ${{ fromJson(inputs.port_context).run_id }}
               logMessage: |
-                Error creating Jira issue: ${{ error.message }}
+                Error creating Jira issue: ${{ github.actions.error.message }}
           }
 
       - name: Inform creation of Jira issue
