@@ -38,8 +38,8 @@ jobs:
         uses: atlassian/gajira-create@v3
         with:
           project: ${{ inputs.project }}
-          issuetype: ${{ inputs.type }}
-          summary: "Dependabot Alert: ${{ inputs.title }}"
+          issuetype: Bug  # Assuming this is a bug, you can adjust as needed
+          summary: "Dependabot Alert: ${{ fromJson(inputs.port_context).entity.properties.packageName }}"
           description: |
             **Severity**: ${{ fromJson(inputs.port_context).entity.properties.severity }}
             **State**: ${{ fromJson(inputs.port_context).entity.properties.state }}
@@ -50,8 +50,7 @@ jobs:
             **GHSA ID**: ${{ fromJson(inputs.port_context).entity.properties.ghsaID }}
             **CVE ID**: ${{ fromJson(inputs.port_context).entity.properties.cveID }}
             **URL**: ${{ fromJson(inputs.port_context).entity.properties.url }}
-            **References**:
-            ${{ fromJson(inputs.port_context).entity.properties.references | join("\n") }}
+            **References**: ${{ join(fromJson(inputs.port_context).entity.properties.references, "\n") }}
           fields: |
             {
               "customfield_12345": "${{ fromJson(inputs.port_context).entity.properties.severity }}",
