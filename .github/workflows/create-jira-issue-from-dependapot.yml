@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Login to Jira
         uses: atlassian/gajira-login@v3
@@ -35,52 +35,37 @@ jobs:
 
       - name: Create Jira issue
         id: create_jira
-        run: |
-          uses: atlassian/gajira-create@v3
-          with:
-            project: ${{ inputs.project }}
-            issuetype: Bug  # Assuming this is a bug, you can adjust as needed
-            summary: "Dependabot Alert: ${{ fromJson(inputs.port_context).entity.properties.packageName }}"
-            description: |
-              **Severity**: ${{ fromJson(inputs.port_context).entity.properties.severity }}
-              **State**: ${{ fromJson(inputs.port_context).entity.properties.state }}
-              **Package Name**: ${{ fromJson(inputs.port_context).entity.properties.packageName }}
-              **Package Ecosystem**: ${{ fromJson(inputs.port_context).entity.properties.packageEcosystem }}
-              **Manifest Path**: ${{ fromJson(inputs.port_context).entity.properties.manifestPath }}
-              **Scope**: ${{ fromJson(inputs.port_context).entity.properties.scope }}
-              **GHSA ID**: ${{ fromJson(inputs.port_context).entity.properties.ghsaID }}
-              **CVE ID**: ${{ fromJson(inputs.port_context).entity.properties.cveID }}
-              **URL**: ${{ fromJson(inputs.port_context).entity.properties.url }}
-              **References**:
-              ${{ join(fromJson(inputs.port_context).entity.properties.references, '\n        ') }}
-            fields: |
-              {
-                "customfield_12345": "${{ fromJson(inputs.port_context).entity.properties.severity }}",
-                "labels": ["port-${{ fromJson(inputs.port_context).entity.identifier }}"]
-              }
-
-      - name: Handle error
-        if: failure()
-        run: |
-          uses: port-labs/port-github-action@v1
-          with:
-            clientId: ${{ secrets.PORT_CLIENT_ID }}
-            clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
-            operation: PATCH_RUN
-            runId: ${{ fromJson(inputs.port_context).run_id }}
-            logMessage: |
-              Error creating Jira issue: ${{ github.actions.error.message }}
+        uses: atlassian/gajira-create@v3
+        with:
+          project: ${{ inputs.project }}
+          issuetype: Bug  # Assuming this is a bug, you can adjust as needed
+          summary: "Dependabot Alert: ${{ fromJson(inputs.port_context).entity.properties.packageName }}"
+          description: |
+            **Severity**: ${{ fromJson(inputs.port_context).entity.properties.severity }}
+            **State**: ${{ fromJson(inputs.port_context).entity.properties.state }}
+            **Package Name**: ${{ fromJson(inputs.port_context).entity.properties.packageName }}
+            **Package Ecosystem**: ${{ fromJson(inputs.port_context).entity.properties.packageEcosystem }}
+            **Manifest Path**: ${{ fromJson(inputs.port_context).entity.properties.manifestPath }}
+            **Scope**: ${{ fromJson(inputs.port_context).entity.properties.scope }}
+            **GHSA ID**: ${{ fromJson(inputs.port_context).entity.properties.ghsaID }}
+            **CVE ID**: ${{ fromJson(inputs.port_context).entity.properties.cveID }}
+            **URL**: ${{ fromJson(inputs.port_context).entity.properties.url }}
+            **References**:
+            ${{ join(fromJson(inputs.port_context).entity.properties.references, '\n            ') }}
+          fields: |
+            {
+              "customfield_12345": "${{ fromJson(inputs.port_context).entity.properties.severity }}",
+              "labels": ["port-${{ fromJson(inputs.port_context).entity.identifier }}"]
+            }
 
       - name: Inform creation of Jira issue
-        if: success()
-        run: |
-          uses: port-labs/port-github-action@v1
-          with:
-            clientId: ${{ secrets.PORT_CLIENT_ID }}
-            clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
-            operation: PATCH_RUN
-            link: ${{ secrets.JIRA_BASE_URL }}/browse/${{ steps.create_jira.outputs.issue }}
-            runId: ${{ fromJson(inputs.port_context).run_id }}
-            logMessage: |
-              Jira issue created! ✅
-              The issue ID is: ${{ steps.create_jira.outputs.issue }}
+        uses: port-labs/port-github-action@v1
+        with:
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: PATCH_RUN
+          link: ${{ secrets.JIRA_BASE_URL }}/browse/${{ steps.create_jira.outputs.issue }}
+          runId: ${{ fromJson(inputs.port_context).run_id }}
+          logMessage: |
+            Jira issue created! ✅
+            The issue ID is: ${{ steps.create_jira.outputs.issue }}
