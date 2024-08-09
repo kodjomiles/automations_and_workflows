@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Login to Jira
         uses: atlassian/gajira-login@v3
@@ -23,6 +23,21 @@ jobs:
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+      - name: Map severity to priority
+        id: map_priority
+        run: |
+          if [[ "${{ fromJson(inputs.port_context).entity.properties.severity }}" == "low" ]]; then
+            echo "priority=Low" >> $GITHUB_ENV
+          elif [[ "${{ fromJson(inputs.port_context).entity.properties.severity }}" == "medium" ]]; then
+            echo "priority=Medium" >> $GITHUB_ENV
+          elif [[ "${{ fromJson(inputs.port_context).entity.properties.severity }}" == "high" ]]; then
+            echo "priority=High" >> $GITHUB_ENV
+          elif [[ "${{ fromJson(inputs.port_context).entity.properties.severity }}" == "critical" ]]; then
+            echo "priority=Highest" >> $GITHUB_ENV
+          else
+            echo "priority=Medium" >> $GITHUB_ENV  # Default if severity is not recognized
+          fi
 
       - name: Inform starting of Jira issue creation
         uses: port-labs/port-github-action@v1
@@ -52,9 +67,9 @@ jobs:
             **URL**: ${{ fromJson(inputs.port_context).entity.properties.url }}
             **References**:
             ${{ join(fromJson(inputs.port_context).entity.properties.references, '\n            ') }}
+          priority: ${{ env.priority }}
           fields: |
             {
-              "customfield_12345": "${{ fromJson(inputs.port_context).entity.properties.severity }}",
               "labels": ["port-${{ fromJson(inputs.port_context).entity.identifier }}"]
             }
 
