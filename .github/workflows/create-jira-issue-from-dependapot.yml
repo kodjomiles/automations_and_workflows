@@ -3,12 +3,6 @@ name: Create Jira Issue from Dependabot Alert
 on:
   workflow_dispatch:
     inputs:
-      title:
-        required: true
-        type: string
-      type:
-        required: true
-        type: string
       project:
         required: true
         type: string
