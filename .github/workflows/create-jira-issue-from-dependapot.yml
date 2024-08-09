@@ -53,7 +53,7 @@ jobs:
         uses: atlassian/gajira-create@v3
         with:
           project: ${{ inputs.project }}
-          issuetype: Bug  # Assuming this is a bug, you can adjust as needed
+          issuetype: Bug  # Adjust as needed
           summary: "Dependabot Alert: ${{ fromJson(inputs.port_context).entity.properties.packageName }}"
           description: |
             **Severity**: ${{ fromJson(inputs.port_context).entity.properties.severity }}
@@ -67,9 +67,9 @@ jobs:
             **URL**: ${{ fromJson(inputs.port_context).entity.properties.url }}
             **References**:
             ${{ join(fromJson(inputs.port_context).entity.properties.references, '\n            ') }}
-          priority: ${{ env.priority }}
           fields: |
             {
+              "priority": {"name": "${{ env.priority }}"},
               "labels": ["port-${{ fromJson(inputs.port_context).entity.identifier }}"]
             }
 
