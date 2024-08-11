@@ -6,6 +6,9 @@ on:
       project:
         required: true
         type: string
+      type:
+        required: true
+        type: string
       port_context:
         required: true
         type: string
@@ -38,7 +41,7 @@ jobs:
         uses: atlassian/gajira-create@v3
         with:
           project: ${{ inputs.project }}
-          issuetype: Bug  # Adjust as needed
+          issuetype: ${{ inputs.type }}
           summary: "Dependabot Alert: ${{ fromJson(inputs.port_context).entity.properties.packageName }}"
           description: |
             **Severity**: ${{ fromJson(inputs.port_context).entity.properties.severity }}
