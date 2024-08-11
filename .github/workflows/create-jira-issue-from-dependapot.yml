@@ -28,15 +28,15 @@ jobs:
         id: map_priority
         run: |
           if [[ "${{ fromJson(inputs.port_context).entity.properties.severity }}" == "low" ]]; then
-            echo "priority_id=5" >> $GITHUB_ENV  # Trivial
+            echo "priority_name=Low" >> $GITHUB_ENV
           elif [[ "${{ fromJson(inputs.port_context).entity.properties.severity }}" == "medium" ]]; then
-            echo "priority_id=4" >> $GITHUB_ENV  # Minor
+            echo "priority_name=Medium" >> $GITHUB_ENV
           elif [[ "${{ fromJson(inputs.port_context).entity.properties.severity }}" == "high" ]]; then
-            echo "priority_id=3" >> $GITHUB_ENV  # Major
+            echo "priority_name=High" >> $GITHUB_ENV
           elif [[ "${{ fromJson(inputs.port_context).entity.properties.severity }}" == "critical" ]]; then
-            echo "priority_id=2" >> $GITHUB_ENV  # Critical
+            echo "priority_name=Critical" >> $GITHUB_ENV
           else
-            echo "priority_id=4" >> $GITHUB_ENV  # Default to Minor if severity is not recognized
+            echo "priority_name=Medium" >> $GITHUB_ENV  # Default to Medium if severity is not recognized
           fi
 
       - name: Inform starting of Jira issue creation
@@ -69,7 +69,7 @@ jobs:
             ${{ join(fromJson(inputs.port_context).entity.properties.references, '\n            ') }}
           fields: |
             {
-              "priority": {"id": "${{ env.priority_id }}"},
+              "priority": {"name": "${{ env.priority_name }}"},
               "labels": ["port-${{ fromJson(inputs.port_context).entity.identifier }}"]
             }
 
