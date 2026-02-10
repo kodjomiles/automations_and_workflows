@@ -1,0 +1,28 @@
+name: Assign Issue to Copilot
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'The number of the issue to assign to Copilot'
+        required: true
+      repository_owner:
+        description: 'Repository owner (org or user)'
+        required: true
+        type: string
+      repository_name:
+        description: 'Repository name'
+        required: true
+        type: string
+      port_run_id:
+        description: 'Port run ID, used for reporting back to Port'
+        required: false
+
+jobs:
+  assign_to_copilot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate inputs
+        run: |
+          echo "Target repository: ${{ inputs.repository_owner }}/${{ inputs.repository_name }}"
+          echo "Issue number: ${{ inputs.issue_number }}"
