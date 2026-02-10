@@ -22,6 +22,9 @@ jobs:
   assign_to_copilot:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: "main"
       - name: Validate inputs
         run: |
           echo "Target repository: ${{ inputs.repository_owner }}/${{ inputs.repository_name }}"
