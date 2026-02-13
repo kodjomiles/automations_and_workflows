@@ -1,26 +1,44 @@
-# Default owner for all files in the repo
-*                @sivanelk97 @sivan27
+# --------------------------------------------------
+# Default owner (fallback)
+# --------------------------------------------------
+* @sivanelk97 @sivan27
 
+# --------------------------------------------------
 # Backend ownership
-/backend/         @sivanelk97 @sivan-org/backend-team @sivan-org/docs-team
+# --------------------------------------------------
+/backend/** @sivanelk97 @sivan-org/backend-team @sivan-org/docs-team
 
-# Frontend ownership (multiple owners)
-/frontend/        @sivanelk97
+# --------------------------------------------------
+# Frontend ownership
+# --------------------------------------------------
+/frontend/** @sivanelk97
 
-# Specific file
-/README.md        @sivanelk97
-
-# JavaScript files in any folder
-**/*.js           @PeyGis
-
-# Terraform files anywhere
-**/*.tf          @sivanelk97
-
+# --------------------------------------------------
 # CI/CD workflows
-.github/workflows/  @kodjomiles
+# --------------------------------------------------
+.github/workflows/** @kodjomiles
 
-# Config files named 'config.yaml' in any folder
-**/config.yaml    @sivanelk97
+# --------------------------------------------------
+# Terraform files anywhere
+# --------------------------------------------------
+**/*.tf @sivanelk97
 
-# Markdown documentation files
-*.md              @sivanelk97 @sivan27 @sivan-org/docs-team
+# --------------------------------------------------
+# JavaScript files anywhere
+# --------------------------------------------------
+**/*.js @PeyGis
+
+# --------------------------------------------------
+# Config files named 'config.yaml' anywhere
+# --------------------------------------------------
+**/config.yaml @sivanelk97
+
+# --------------------------------------------------
+# Markdown documentation anywhere
+# --------------------------------------------------
+**/*.md @sivanelk97 @sivan27 @sivan-org/docs-team
+
+# --------------------------------------------------
+# Specific file override
+# --------------------------------------------------
+/README.md @sivanelk97
